@@ -545,6 +545,7 @@ function words(){
     const v=m.vocab[deck[0]];
     $('#stage').innerHTML = `<div class="kicker">Step 3 · Words</div><h2>Word cards</h2><p style="margin:4px 0 14px;color:var(--page-muted)">Say the meaning out loud, then flip to check.</p>
      <div class="flash-wrap"><button class="flash ${flipped?'flip':''}" data-flip aria-label="Flashcard: ${esc(v.t)}. Tap to flip."><div class="in"><div class="face front"><small>Word</small>${esc(v.t)}</div><div class="face back"><small>Meaning</small>${esc(v.d)}</div></div></button>
+     <p style="text-align:center;font-size:13px;color:var(--page-muted);margin:4px 0 0">${flipped?'Tap again to flip back':'Tap the card to flip'}</p>
      <div class="count">${st.known.length}/${m.vocab.length} known</div>
      <div class="fbtns"><button class="btn ghost" data-again ${flipped?'':'disabled'}>Not yet</button><button class="btn teal" data-got ${flipped?'':'disabled'}>Got it ✓</button></div></div>`;
   }
