@@ -501,7 +501,12 @@ function arrive(){
      <div>${m.mapSvg?`<div class="mapbox">${m.mapSvg}</div>`:`<div class="mapbox">${D.world}</div>`}
        ${figs.length?`<div class="figs" style="margin-top:14px">${figs.map(f=>`<figure class="fig" style="margin:0"><img src="${img(f.img)}" alt="${esc(f.cap)}" loading="lazy"><figcaption>${esc(f.cap)}</figcaption></figure>`).join('')}</div>`:''}
      </div>
-     <div><div class="kicker">${esc(m.peopleTitle||"Who's who")}</div><ul class="who">${m.people.map(p=>`<li><b>${esc(p.n)}</b>${esc(p.d)}</li>`).join('')}</ul></div>
+     <div><div class="kicker">${esc(m.peopleTitle||"Who's who")}</div><ul class="who">${m.people.map(p=>{
+  const key = p.n.toLowerCase().replace(/[^a-z]/g,'');
+  const map = {georgewashington:'person-washington',benjaminfranklin:'person-franklin',hammurabi:'person-hammurabi',confucius:'person-confucius',siddharthagautama:'person-buddha',juliuscaesar:'person-caesar',leonardodavinci:'person-leonardo'};
+  const img = map[key] ? `<img src="img/${map[key]}.jpg" alt="${esc(p.n)}" style="width:56px;height:72px;object-fit:cover;border-radius:8px;border:2px solid var(--gold);float:left;margin:0 10px 6px 0;">` : '';
+  return `<li style="overflow:hidden;">${img}<b>${esc(p.n)}</b>${esc(p.d)}</li>`;
+}).join('')}</ul></div>
    </div>${nextBtn('Start exploring','explore')}`;
 }
 
