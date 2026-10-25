@@ -516,8 +516,10 @@ function explore(){
      <p style="margin:4px 0 8px;color:var(--page-muted)">Open every ${m.seq?'step':'card'}. ${st.opened.length}/${m.cards.length} opened.</p>
      <div class="tiles ${labels?'has-labels':''}" role="tablist">${m.cards.map((x,i)=>`<button class="tile ${st.opened.includes(i)?'seen':''} ${i===sel?'cur':''}" role="tab" aria-selected="${i===sel}" data-tile="${i}" aria-label="${esc(x.t)}">${esc(x.k)}${labels?`<small>${esc(x.t)}</small>`:''}</button>`).join('')}</div>
      const iconMap = {G:'icon-geo',R:'icon-religion',A:'icon-achieve',P:'icon-politics',E:'icon-economy',S:'icon-social'};
-const icon = iconMap[c.k] ? `<img src="img/${iconMap[c.k]}.jpg" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:12px;border:2px solid var(--gold);margin-bottom:6px;">` : '';
-<article class="gcard" role="tabpanel"><div class="big" aria-hidden="true" style="display:flex;flex-direction:column;align-items:center;">${icon}${esc(c.k)}</div><h3>${esc(c.t)}</h3><p>${esc(c.x)}</p><div class="dyk"><b>DID YOU KNOW?</b>${esc(c.f)}</div></article>
+    const icon = iconMap[c.k] ? `<img src="img/${iconMap[c.k]}.jpg" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:12px;border:2px solid var(--gold);margin-bottom:6px;">` : '';
+    $('#stage').innerHTML = `<div class="kicker">Step 2 · Explore</div><h2>${esc(m.cardsTitle||'GRAPES: the explorer checklist')}</h2>
+     <div class="tiles ${labels?'has-labels':''}" role="tablist">${m.cards.map((x,i)=>`<button class="tile ${st.opened.includes(i)?'seen':''} ${i===sel?'cur':''}" role="tab" aria-selected="${i===sel}" data-tile="${i}" aria-label="${esc(x.t)}">${esc(x.k)}${labels?`<small>${esc(x.t)}</small>`:''}</button>`).join('')}</div>
+     <article class="gcard" role="tabpanel"><div class="big" aria-hidden="true" style="display:flex;flex-direction:column;align-items:center;">${icon}${esc(c.k)}</div><h3>${esc(c.t)}</h3><p>${esc(c.x)}</p><div class="dyk"><b>DID YOU KNOW?</b>${esc(c.f)}</div></article>
      <div class="nextrow">${!all?`<button class="btn" data-tilenext>Next card</button>`:''}<button class="btn gold" data-next="words" ${all?'':'disabled'}>${all?'On to Words →':'Open all cards to continue'}</button></div>`;
     if(all) complete('explore',0);
   }
