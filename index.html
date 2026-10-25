@@ -504,7 +504,7 @@ function arrive(){
      </div>
      <div><div class="kicker">${esc(m.peopleTitle||"Who's who")}</div><ul class="who">${m.people.map(p=>{
   const key = (p.n||'').toLowerCase().replace(/[^a-z]/g,'');
-  const pmap = {georgewashington:'person-washington',benjaminfranklin:'person-franklin',hammurabi:'person-hammurabi',confucius:'person-confucius',siddharthagautama:'person-buddha',juliuscaesar:'person-caesar',leonardodavinci:'person-leonardo'};
+  const pmap = {georgewashington:'person-washington',jamesmadison:'person-madison',benjaminfranklin:'person-franklin',hammurabi:'person-hammurabi',confucius:'person-confucius',siddharthagautama:'person-buddha',ashoka:'person-ashoka',pericles:'person-pericles',juliuscaesar:'person-caesar',leonardodavinci:'person-leonardo'};
   const pimg = pmap[key] ? `<img src="img/${pmap[key]}.jpg" alt="${esc(p.n)}" style="width:64px;height:80px;object-fit:cover;border-radius:10px;border:2px solid var(--gold);flex-shrink:0;">` : '';
   return `<li style="display:flex;gap:12px;align-items:flex-start;">${pimg}<div><b>${esc(p.n)}</b>${esc(p.d)}</div></li>`;
 }).join('')}</ul></div>
@@ -544,7 +544,10 @@ function words(){
       complete('words',0); return; }
     const v=m.vocab[deck[0]];
     $('#stage').innerHTML = `<div class="kicker">Step 3 · Words</div><h2>Word cards</h2><p style="margin:4px 0 14px;color:var(--page-muted)">Say the meaning out loud, then flip to check.</p>
-     <div class="flash-wrap"><button class="flash ${flipped?'flip':''}" data-flip aria-label="Flashcard: ${esc(v.t)}. Tap to flip."><div class="in"><div class="face front"><small>Word</small>${esc(v.t)}</div><div class="face back"><small>Meaning</small>${esc(v.d)}</div></div></button>
+     <div class="flash-wrap"><button class="flash ${flipped?'flip':''}" data-flip aria-label="Flashcard: ${esc(v.t)}. Tap to flip." style="position:relative;overflow:hidden;">
+  <div class="face front" style="position:absolute;inset:0;display:${flipped?'none':'grid'};place-items:center;background:var(--btn);color:#fff;border-radius:16px;padding:18px;"><small style="position:absolute;top:12px;left:0;right:0;font-size:11px;letter-spacing:.14em;color:var(--gold-2);">WORD</small>${esc(v.t)}</div>
+  <div class="face back" style="position:absolute;inset:0;display:${flipped?'grid':'none'};place-items:center;background:var(--card);color:var(--page-ink);border-radius:16px;padding:18px;border:2px solid var(--btn);"><small style="position:absolute;top:12px;left:0;right:0;font-size:11px;letter-spacing:.14em;color:var(--kick);">MEANING</small>${esc(v.d)}</div>
+</button>
      <p style="text-align:center;font-size:13px;color:var(--page-muted);margin:4px 0 0">${flipped?'Tap again to flip back':'Tap the card to flip'}</p>
      <div class="count">${st.known.length}/${m.vocab.length} known</div>
      <div class="fbtns"><button class="btn ghost" data-again ${flipped?'':'disabled'}>Not yet</button><button class="btn teal" data-got ${flipped?'':'disabled'}>Got it ✓</button></div></div>`;
