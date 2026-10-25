@@ -251,7 +251,7 @@ svg.wmap,svg.rmap{display:block;width:100%;height:auto}
 /* flashcards */
 .flash-wrap{display:grid;gap:12px;justify-items:center}
 .flash{all:unset;cursor:pointer;width:min(100%,440px);aspect-ratio:3/2;perspective:900px}
-.flash .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flash .in{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d;-webkit-transform-style:preserve-3d}
 .flash.flip .in{transform:rotateY(180deg)}
 .flash .face{position:absolute;inset:0;border-radius:16px;display:grid;place-items:center;text-align:center;padding:18px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .flash .front{background:var(--btn);color:#fff;font:400 clamp(24px,5vw,34px)/1.15 var(--f-display);box-shadow:0 8px 0 var(--btn-sh)}
@@ -482,7 +482,8 @@ function openModule(id, st){
 function firstOpen(id){ const st=ms(id).steps; const f=STEPS.find(([k])=>!st[k]); return f?f[0]:'arrive'; }
 function renderSteps(){
   const st=ms(cur.id).steps;
-  $('#steps').innerHTML = STEPS.map(([k,l],i)=>`<button class="step ${k===step?'cur':''} ${st[k]?'done':''}" data-step="${k}" ${k===step?'aria-current="step"':''}><span class="n">${st[k]?'✓':i+1}</span>${l}</button>`).join('');
+  const backBtn = `<button class="step" data-home style="background:var(--panel-2)">← Back</button>`;
+  $('#steps').innerHTML = backBtn + STEPS.map(([k,l],i)=>`<button class="step ${k===step?'cur':''} ${st[k]?'done':''}" data-step="${k}" ${k===step?'aria-current="step"':''}><span class="n">${st[k]?'✓':i+1}</span>${l}</button>`).join('');
   const c=$('.step.cur'); if(c) c.scrollIntoView({block:'nearest',inline:'center'});
 }
 function goStep(k){ step=k; renderSteps(); renderStep(); const s=$('#steps'); window.scrollTo({top: s.getBoundingClientRect().top + window.scrollY - 70, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}); }
@@ -502,10 +503,10 @@ function arrive(){
        ${figs.length?`<div class="figs" style="margin-top:14px">${figs.map(f=>`<figure class="fig" style="margin:0"><img src="${img(f.img)}" alt="${esc(f.cap)}" loading="lazy"><figcaption>${esc(f.cap)}</figcaption></figure>`).join('')}</div>`:''}
      </div>
      <div><div class="kicker">${esc(m.peopleTitle||"Who's who")}</div><ul class="who">${m.people.map(p=>{
-  const key = p.n.toLowerCase().replace(/[^a-z]/g,'');
-  const map = {georgewashington:'person-washington',benjaminfranklin:'person-franklin',hammurabi:'person-hammurabi',confucius:'person-confucius',siddharthagautama:'person-buddha',juliuscaesar:'person-caesar',leonardodavinci:'person-leonardo'};
-  const img = map[key] ? `<img src="img/${map[key]}.jpg" alt="${esc(p.n)}" style="width:56px;height:72px;object-fit:cover;border-radius:8px;border:2px solid var(--gold);float:left;margin:0 10px 6px 0;">` : '';
-  return `<li style="overflow:hidden;">${img}<b>${esc(p.n)}</b>${esc(p.d)}</li>`;
+  const key = (p.n||'').toLowerCase().replace(/[^a-z]/g,'');
+  const pmap = {georgewashington:'person-washington',benjaminfranklin:'person-franklin',hammurabi:'person-hammurabi',confucius:'person-confucius',siddharthagautama:'person-buddha',juliuscaesar:'person-caesar',leonardodavinci:'person-leonardo'};
+  const pimg = pmap[key] ? `<img src="img/${pmap[key]}.jpg" alt="${esc(p.n)}" style="width:64px;height:80px;object-fit:cover;border-radius:10px;border:2px solid var(--gold);flex-shrink:0;">` : '';
+  return `<li style="display:flex;gap:12px;align-items:flex-start;">${pimg}<div><b>${esc(p.n)}</b>${esc(p.d)}</div></li>`;
 }).join('')}</ul></div>
    </div>${nextBtn('Start exploring','explore')}`;
 }
@@ -523,7 +524,7 @@ function explore(){
      <p style="margin:4px 0 8px;color:var(--page-muted)">Open every ${m.seq?'step':'card'}. ${st.opened.length}/${m.cards.length} opened.</p>
      <div class="tiles ${labels?'has-labels':''}" role="tablist">${m.cards.map((x,i)=>`<button class="tile ${st.opened.includes(i)?'seen':''} ${i===sel?'cur':''}" role="tab" aria-selected="${i===sel}" data-tile="${i}" aria-label="${esc(x.t)}">${esc(x.k)}${labels?`<small>${esc(x.t)}</small>`:''}</button>`).join('')}</div>
      <article class="gcard" role="tabpanel"><div class="big" aria-hidden="true" style="display:flex;flex-direction:column;align-items:center;">${icon}${esc(c.k)}</div><h3>${esc(c.t)}</h3><p>${esc(c.x)}</p><div class="dyk"><b>DID YOU KNOW?</b>${esc(c.f)}</div></article>
-     <div class="nextrow">${!all?`<button class="btn" data-tilenext>Next card</button>`:''}<button class="btn gold" data-next="words" ${all?'':'disabled'}>${all?'On to Words →':'Open all cards to continue'}</button></div>`;
+     <div class="nextrow">${!all?`<button class="btn" data-tilenext>Next card</button>`:''}<button class="btn gold" data-next="words">On to Words →</button></div>`;
     if(all) complete('explore',0);
   }
   $('#stage').onclick = e=>{ const t=e.target.closest('[data-tile]'); if(t){ sel=+t.dataset.tile; draw(); $('[data-tile="'+sel+'"]').focus(); }
