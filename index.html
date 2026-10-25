@@ -658,7 +658,8 @@ function tryStamp(){
 document.addEventListener('click',e=>{
   const g=e.target.closest('[data-go]'); if(g){ location.hash=g.dataset.go; return; }
   if(e.target.closest('[data-home]')){ location.hash=''; return; }
-  const n=e.target.closest('[data-next]'); if(n && !n.disabled){ const k=n.dataset.next; if(step==='arrive') complete('arrive',5,'arrived'); goStep(k); return; }
+  const st=e.target.closest('[data-step]'); if(st){ goStep(st.dataset.step); return; }
+  const n=e.target.closest('[data-next]'); if(n){ const k=n.dataset.next; if(step==='arrive') complete('arrive',5,'arrived'); goStep(k); return; }
   const b=e.target.closest('[data-back]'); if(b){ goStep(b.dataset.back); return; }
 });
 document.addEventListener('keydown',e=>{ const p=e.target.closest&&e.target.closest('.pin'); if(p && (e.key==='Enter'||e.key===' ')){ e.preventDefault(); location.hash=p.dataset.id; } });
