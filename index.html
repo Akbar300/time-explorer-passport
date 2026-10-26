@@ -544,9 +544,9 @@ function words(){
       complete('words',0); return; }
     const v=m.vocab[deck[0]];
     $('#stage').innerHTML = `<div class="kicker">Step 3 · Words</div><h2>Word cards</h2><p style="margin:4px 0 14px;color:var(--page-muted)">Say the meaning out loud, then flip to check.</p>
-     <div class="flash-wrap"><button class="flash ${flipped?'flip':''}" data-flip aria-label="Flashcard: ${esc(v.t)}. Tap to flip." style="position:relative;overflow:hidden;">
-  <div class="face front" style="position:absolute;inset:0;display:${flipped?'none':'grid'};place-items:center;background:var(--btn);color:#fff;border-radius:16px;padding:18px;"><small style="position:absolute;top:12px;left:0;right:0;font-size:11px;letter-spacing:.14em;color:var(--gold-2);">WORD</small>${esc(v.t)}</div>
-  <div class="face back" style="position:absolute;inset:0;display:${flipped?'grid':'none'};place-items:center;background:var(--card);color:var(--page-ink);border-radius:16px;padding:18px;border:2px solid var(--btn);"><small style="position:absolute;top:12px;left:0;right:0;font-size:11px;letter-spacing:.14em;color:var(--kick);">MEANING</small>${esc(v.d)}</div>
+     <div class="flash-wrap"><button class="flash" data-flip aria-label="Flashcard: ${esc(v.t)}. Tap to flip." style="all:unset;cursor:pointer;display:block;width:min(100%,440px);height:220px;position:relative;border-radius:16px;overflow:hidden;margin:0 auto;">
+  <div style="position:absolute;inset:0;display:${flipped?'none':'flex'};align-items:center;justify-content:center;background:var(--btn);color:#fff;padding:18px;text-align:center;font:400 28px/1.2 var(--f-display);"><span style="position:absolute;top:12px;left:0;right:0;font:600 11px var(--f-mono);letter-spacing:.14em;color:var(--gold-2);">WORD</span>${esc(v.t)}</div>
+  <div style="position:absolute;inset:0;display:${flipped?'flex':'none'};align-items:center;justify-content:center;background:var(--card);color:var(--page-ink);padding:18px;text-align:center;font-size:20px;line-height:1.4;border:2px solid var(--btn);"><span style="position:absolute;top:12px;left:0;right:0;font:600 11px var(--f-mono);letter-spacing:.14em;color:var(--kick);">MEANING</span>${esc(v.d)}</div>
 </button>
      <p style="text-align:center;font-size:13px;color:var(--page-muted);margin:4px 0 0">${flipped?'Tap again to flip back':'Tap the card to flip'}</p>
      <div class="count">${st.known.length}/${m.vocab.length} known</div>
