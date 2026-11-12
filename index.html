@@ -475,6 +475,37 @@ body.is-home .scene::after{background:color-mix(in srgb,var(--bg) 88%,transparen
 @keyframes heroText{to{transform:translateY(-14px);opacity:.25}}
 
 .tl.fit .tl-ev{width:122px;font-size:12.5px;line-height:1.25}
+
+/* who's-who list */
+.who li{display:flex;gap:12px;align-items:flex-start}
+.who li.tap{cursor:pointer;transition:border-color .15s,transform .15s}
+.who li.tap:hover{border-color:var(--gold-dim);transform:translateY(-1px)}
+.who li.tap:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.who .who-pic{width:60px;height:76px;object-fit:cover;border-radius:10px;border:2px solid var(--gold);flex-shrink:0}
+.who .who-pic.sq{width:52px;height:52px}
+.who .more{display:block;margin-top:4px;font:700 11.5px var(--f-mono);letter-spacing:.04em;color:var(--kick)}
+@container (min-width:860px){
+  .who.many{grid-template-columns:1fr 1fr}
+  .who.many li{flex-direction:column;gap:8px}
+}
+/* popup */
+.popup-card{max-height:calc(100vh - 40px);overflow:auto}
+.popup-card img{max-height:46vh;object-fit:cover;cursor:zoom-in}
+/* enlarge pictures */
+.mhero{cursor:zoom-in}
+.zoom-hint{position:absolute;top:12px;right:12px;font:700 12px/1 var(--f-mono);letter-spacing:.04em;padding:8px 10px;border-radius:999px;background:#0b1a31cc;color:var(--gold-2);border:1px solid #ffffff33;opacity:.85;transition:opacity .2s}
+.mhero:hover .zoom-hint{opacity:1}
+.fig img,.guide-wrap img{cursor:zoom-in}
+.zoom{position:fixed;inset:0;z-index:200;background:#050b16f2;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 16px 16px;animation:fadein .2s}
+@keyframes fadein{from{opacity:0}}
+.zoom-stage{flex:1;min-height:0;width:100%;display:grid;place-items:center;overflow:hidden;touch-action:pinch-zoom}
+.zoom-stage img{max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;transition:transform .25s;cursor:zoom-in;box-shadow:0 20px 60px #000a}
+.zoom.zoomed .zoom-stage img{transform:scale(2.4);cursor:zoom-out}
+.zoom-cap{color:#e6edf6;font-size:16px;margin:12px 0 2px;text-align:center;max-width:70ch}
+.zoom-tip{color:#9fb0c7;font:600 12px var(--f-mono);margin:4px 0 0}
+.zoom-x{position:absolute;top:12px;right:16px;width:44px;height:44px;border-radius:50%;border:1px solid #ffffff40;background:#ffffff14;color:#fff;font-size:28px;line-height:1;cursor:pointer}
+.zoom-x:focus-visible{outline:3px solid var(--gold-2)}
+
 /* step content adapts to the width it actually has */
 @container (min-width:860px){
   .twocol{grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:28px}
@@ -520,6 +551,64 @@ let toastT;
 function toast(msg){ const old=$('.toast'); if(old) old.remove(); const t=document.createElement('div'); t.className='toast'; t.setAttribute('role','status'); t.textContent=msg; document.body.appendChild(t); clearTimeout(toastT); toastT=setTimeout(()=>t.remove(),1900); }
 function addXP(n, why){ S.xp+=n; save(); updateBar(); if(why) toast(`+${n} XP · ${why}`); }
 function updateBar(){ $('#xpc').textContent = S.xp+' XP'; $('#stc').textContent = stampsCount()+'/12'; renderSide(); }
+
+const PMAP = {georgewashington:'person-washington',jamesmadison:'person-madison',benjaminfranklin:'person-franklin',hammurabi:'person-hammurabi',confucius:'person-confucius',siddharthagautama:'person-buddha',ashoka:'person-ashoka',pericles:'person-pericles',juliuscaesar:'person-caesar',leonardodavinci:'person-leonardo'};
+const GRAPES_INFO = {
+  G:{icon:'icon-geo', ask:'Ask: Where is it? What are the land, rivers and climate like? How did that shape farming, homes and trade?', ex:'Mesopotamia’s two rivers left rich soil, so people could farm a dry land and build the first cities.'},
+  R:{icon:'icon-religion', ask:'Ask: What did people believe? One god or many? What were their holy places, holidays and religious leaders?', ex:'Sumerians believed in many gods (polytheism) and built a giant ziggurat temple in every city.'},
+  A:{icon:'icon-achieve', ask:'Ask: What did they invent, build, write or discover? Which of those do we still use today?', ex:'Writing (cuneiform), the wheel, and the 60-minute hour all come from Mesopotamia.'},
+  P:{icon:'icon-politics', ask:'Ask: Who ruled? A king, an emperor, or the citizens? How were laws made and enforced?', ex:'King Hammurabi carved his laws on stone so everyone could see the same rules.'},
+  E:{icon:'icon-economy', ask:'Ask: How did people get what they needed? Farming, trading, money, jobs?', ex:'Extra food (a surplus) let some people become traders, artisans and scribes instead of farmers.'},
+  S:{icon:'icon-social', ask:'Ask: Who was at the top, in the middle and at the bottom? What jobs and rules did each group have?', ex:'Kings and priests were at the top, farmers in the middle, and enslaved people at the bottom.'}
+};
+const PERSON_DETAILS = {
+      'George Washington':'Led the Continental Army in the Revolutionary War, then led the Constitutional Convention in 1787. He became the first President and set many traditions still followed today.',
+      'James Madison':'Wrote much of the Constitution and the Bill of Rights. He is called the Father of the Constitution. He later became the fourth President.',
+      'Benjamin Franklin':'Scientist, inventor, and diplomat. At 81 he was the oldest delegate. He helped delegates compromise so the Constitution could be finished.',
+      'Independence Hall':'The building in Philadelphia where the Declaration of Independence and the Constitution were signed. It still stands today and is a national historic site.',
+      'Hammurabi':'King of Babylon around 1754 BCE. He is famous for the Code of Hammurabi, one of the oldest written sets of laws. The laws were carved on a tall stone stele and covered topics like trade, family, and crime. The idea that laws should be written down and apply to everyone was a big step.',
+      'Sargon of Akkad':'Created the world’s first empire around 2300 BCE by conquering many city-states in Mesopotamia. His rule showed that one leader could control a large area, not just one city.',
+      'Epic of Gilgamesh':'One of the oldest stories ever written, from Mesopotamia. It tells of a hero king who searches for eternal life. The story was written on clay tablets in cuneiform and shows what people valued and feared.',
+      'Ur':'A major Sumerian city with a huge ziggurat (stepped temple). Archaeologists have found royal tombs and many artifacts that teach us about daily life and religion in early Mesopotamia.',
+      'Confucius':'A Chinese teacher who lived about 500 BCE. He taught that people should respect family, rulers should be fair, and education matters. His ideas shaped Chinese government and society for centuries.',
+      'Qin Shi Huang':'The first emperor of a united China in 221 BCE. He standardized writing, money, and measurements, and began the Great Wall. He is also known for the Terracotta Army buried with him.',
+      'Han dynasty':'Ruled China from 206 BCE to 220 CE. They opened the Silk Road for trade with the West and invented paper. Chinese culture and government grew stronger under the Han.',
+      'Terracotta Army':'About 8,000 life-size clay soldiers, horses, and chariots buried near Qin Shi Huang’s tomb. They were made to protect the emperor in the afterlife. Archaeologists discovered them in 1974.',
+      'Mohenjo-daro & Harappa':'Two major cities of the Indus Valley Civilization (about 2500–1900 BCE). They had carefully planned streets in a grid, brick houses, and advanced drainage systems. These cities show early urban planning.',
+      'Siddhartha Gautama':'A prince who left his palace, meditated, and became the Buddha. He taught that suffering comes from wanting too much and that people can find peace by following the Middle Way. Buddhism spread across Asia.',
+      'Ashoka':'A powerful Indian emperor of the Maurya Empire. After a bloody war he turned to peace and Buddhism. He built roads, hospitals, and pillars with his laws written on them.',
+      'Guru Nanak':'Founded Sikhism around 1500 CE in the Punjab region of India. He taught that all people are equal, that there is one God, and that people should live honestly and help others.',
+      'Olmec':'Often called the “mother culture” of Mesoamerica (about 1200–400 BCE). They are famous for carving huge stone heads and for early writing and calendar ideas that later cultures used.',
+      'Maya':'Built great cities such as Tikal and Chichén Itzá. Their peak was about 250–900 CE. They created an accurate calendar, advanced writing, and impressive pyramid temples.',
+      'Aztec':'Founded the powerful city of Tenochtitlan in 1325 CE on an island in a lake. They built a large empire in central Mexico before being conquered by Spain in 1521.',
+      'Inca':'Ruled a vast empire from Cusco in the Andes Mountains. They built Machu Picchu and a huge road system. The Spanish conquered them in 1532.',
+      'Pericles':'Leader of Athens during its golden age. He supported democracy, built the Parthenon, and encouraged art and philosophy. Athens became a center of learning under his leadership.',
+      'Socrates':'A famous Greek philosopher who taught by asking questions instead of giving answers. His method is still called the Socratic method. He was put on trial in Athens for his ideas.',
+      'Homer':'Ancient Greek poet credited with writing the Iliad and the Odyssey, two of the oldest and most important works of Western literature. These epic poems tell stories of heroes, gods, and the Trojan War.',
+      'Alexander the Great':'King of Macedonia who conquered a huge empire stretching from Greece to Egypt and India (336–323 BCE). He spread Greek culture, language, and ideas across three continents.',
+      'Julius Caesar':'A Roman general and politician who conquered Gaul and became dictator of Rome. He was assassinated in 44 BCE by senators who feared he had too much power. His death led to the end of the Roman Republic.',
+      'Augustus':'The first emperor of Rome. He brought an end to civil wars and began the Pax Romana, about 200 years of relative peace and prosperity across the empire.',
+      'Constantine':'The first Roman emperor to convert to Christianity. In 313 CE he issued the Edict of Milan, which legalized Christianity and ended the persecution of Christians.',
+      'The Colosseum':'A giant amphitheater in Rome that could hold about 50,000 people. It was used for gladiator fights, animal hunts, and public spectacles. It is one of the most famous ancient buildings still standing.',
+      'King Ezana':'King of the Axum kingdom in East Africa. Around 330 CE he adopted Christianity, making Axum one of the first Christian kingdoms in the world. He also expanded trade and power.',
+      'Adulis':'The busy seaport of the Axum kingdom on the Red Sea. Ships from India, the Mediterranean, and Africa stopped here to trade goods such as ivory, gold, spices, and textiles.',
+      'Great Enclosure':'The largest ancient stone structure south of the Sahara Desert, part of Great Zimbabwe. Built without mortar, its high walls show the skill of the builders and the power of the kingdom.',
+      'Zimbabwe Birds':'Carved soapstone birds found at Great Zimbabwe. They are now a national symbol of the country of Zimbabwe and represent the culture and history of the Shona people.',
+      'Prophet Muhammad':'The prophet of Islam, born in Mecca about 570 CE. Muslims believe he received the Qur’an from God. His teachings form the basis of Islam, which spread rapidly across Asia, Africa, and Europe.',
+      'al-Khwarizmi':'A Persian mathematician who worked in Baghdad. He is called the “father of algebra.” The word “algorithm” comes from his name. His work helped preserve and advance mathematics.',
+      'House of Wisdom':'A famous library and research center in Baghdad during the Abbasid Caliphate. Scholars there translated Greek, Persian, and Indian books into Arabic and made new discoveries in science, math, and medicine.',
+      'Mecca':'Islam’s holiest city, located in present-day Saudi Arabia. It is the birthplace of Prophet Muhammad and the site of the Kaaba. Every year millions of Muslims make the Hajj pilgrimage to Mecca.',
+      'Roman engineering':'Romans built long-lasting roads, aqueducts that carried water to cities, and strong concrete buildings. These inventions changed daily life by making travel, trade, and clean water easier.',
+      'Chinese inventions':'Ancient China invented paper, the compass, gunpowder, and printing. These ideas spread along the Silk Road and changed the world by improving communication, navigation, and technology.',
+      'Maya astronomy':'The Maya carefully observed the stars and planets. Their calendar was extremely accurate and guided farming, religious ceremonies, and important events.',
+      'Great Zimbabwe trade':'Archaeologists found Chinese porcelain and other foreign goods at Great Zimbabwe. This shows the kingdom traded with distant places across the Indian Ocean.',
+      'Islamic science':'Scholars in the Islamic world preserved ancient Greek knowledge and added new discoveries in math, astronomy, medicine, and chemistry. The House of Wisdom in Baghdad was a major center of learning.',
+      'Greek democracy':'In Athens, citizens voted directly on laws and leaders. This idea of people having a say in government influenced later democracies, including the United States.',
+      'Charlemagne':'King of the Franks who united much of Western Europe. In 800 CE the Pope crowned him emperor. He supported education and is sometimes called the Father of Europe.',
+      'Leonardo da Vinci':'A Renaissance artist and inventor from Italy. He painted the Mona Lisa and The Last Supper, and filled notebooks with ideas for machines, anatomy, and flight. He represents the idea of a well-rounded learner.',
+      'Johannes Gutenberg':'German inventor who built a movable-type printing press around 1450. His press made books cheaper and faster to produce, helping spread knowledge during the Renaissance and Reformation.',
+      'The Medici family':'Powerful bankers in Florence, Italy, during the Renaissance. They used their wealth to support artists, architects, and scholars, helping Florence become a center of art and learning.'
+    };
 const WIDE = matchMedia('(min-width:1500px)');
 let sceneUrl='';
 function setScene(url){
@@ -651,7 +740,7 @@ function openModule(id, st){
   const guideHTML = m.guide ? `<div class="guide-wrap"><img src="img/${m.guide}.jpg" alt="Local guide">${m.id==='fertile'?`<img class="ruler" src="img/meso-king.jpg" alt="Ruler">`:''}<div class="gtx">Your local guide is ready to show you around!</div></div>` : '';
   const nx = M[(M.indexOf(m)+1)%M.length];
   $('#app').innerHTML = `<div class="mod"><button class="back" data-home>← PASSPORT</button>
-   <div class="mhero" style="position:relative">${heroMedia}<div class="shade"><div class="eyebrow">${esc(m.unit)} · ${esc(m.q)}</div><h1>${esc(m.title)}</h1>
+   <div class="mhero" style="position:relative" role="button" tabindex="0" aria-label="Enlarge the picture">${heroMedia}<span class="zoom-hint" aria-hidden="true">⤢ Tap to enlarge</span><div class="shade"><div class="eyebrow">${esc(m.unit)} · ${esc(m.q)}</div><h1>${esc(m.title)}</h1>
    <div class="sub"><span class="pill g">${esc(m.years)}</span><span class="pill">${esc(m.region)}</span></div></div></div>
    ${m.heroCap?`<p class="cap"><b>ARTIST'S SCENE</b>${esc(m.heroCap.replace(/^Artist's scene( of)?:?\s*/i,'').replace(/^./,c=>c.toUpperCase()))}</p>`:''}
    <aside class="mod-rail">${guideHTML?`<div>${guideHTML}</div>`:''}<div><div class="rail-h">Mission steps</div><nav class="steps" id="steps" aria-label="Mission steps"></nav><div class="rail-meta" id="railmeta"></div></div>
@@ -683,14 +772,13 @@ function arrive(){
    <p class="lead">${esc(m.hook)}</p>
    <div class="twocol">
      <div>${m.mapSvg?`<div class="mapbox">${m.mapSvg}</div>`:`<div class="mapbox">${D.world}</div>`}
-       ${figs.length?`<div class="figs" style="margin-top:14px">${figs.map(f=>`<figure class="fig" style="margin:0"><img src="${img(f.img)}" alt="${esc(f.cap)}" loading="lazy"><figcaption>${esc(f.cap)}</figcaption></figure>`).join('')}</div>`:''}
      </div>
-     <div><div class="kicker">${esc(m.peopleTitle||"Who's who")}</div><ul class="who">${m.people.map(p=>{
-  const key = (p.n||'').toLowerCase().replace(/[^a-z]/g,'');
-  const pmap = {georgewashington:'person-washington',jamesmadison:'person-madison',benjaminfranklin:'person-franklin',hammurabi:'person-hammurabi',confucius:'person-confucius',siddharthagautama:'person-buddha',ashoka:'person-ashoka',pericles:'person-pericles',juliuscaesar:'person-caesar',leonardodavinci:'person-leonardo'};
-  const pimg = pmap[key] ? `<img src="img/${pmap[key]}.jpg" alt="${esc(p.n)}" style="width:64px;height:80px;object-fit:cover;border-radius:10px;border:2px solid var(--gold);flex-shrink:0;">` : '';
-  return `<li style="display:flex;gap:12px;align-items:flex-start;cursor:pointer;" data-person="${esc(p.n)}">${pimg}<div><b>${esc(p.n)}</b>${esc(p.d)}</div></li>`;
-}).join('')}</ul></div>
+     <div><div class="kicker">${esc(m.peopleTitle||"Who's who")}</div><ul class="who ${m.people.length>4?'many':''}">${m.people.map(p=>{
+  const key=(p.n||'').toLowerCase().replace(/[^a-z]/g,''), g=GRAPES_INFO[(p.n||'')[0]] && /^[GRAPES] = /.test(p.n) ? (p.n||'')[0] : null;
+  const pic = PMAP[key] ? `<img src="img/${PMAP[key]}.jpg" alt="" class="who-pic">` : g ? `<img src="img/${GRAPES_INFO[g].icon}.jpg" alt="" class="who-pic sq">` : '';
+  const more = !!(PERSON_DETAILS[p.n] || g);
+  return `<li class="${more?'tap':''}" ${more?`data-person="${esc(p.n)}" role="button" tabindex="0"`:''}>${pic}<div><b>${esc(p.n)}</b>${esc(p.d)}${more?'<span class="more">Tap to learn more →</span>':''}</div></li>`;
+}).join('')}</ul>${figs.length?`<div class="figs" style="margin-top:14px">${figs.map(f=>`<figure class="fig" style="margin:0"><img src="${img(f.img)}" alt="${esc(f.cap)}" loading="lazy"><figcaption>${esc(f.cap)}</figcaption></figure>`).join('')}</div>`:''}</div>
    </div>${nextBtn('Start exploring','explore')}`;
 }
 
@@ -865,74 +953,54 @@ function tryStamp(){
 }
 
 
-function showPopup(title, text, img){
+function showPopup(title, text, img, ex){
   const ov = document.createElement('div');
-  ov.className = 'popup';
+  ov.className = 'popup'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-modal','true'); ov.setAttribute('aria-label',title);
   ov.innerHTML = `<div class="popup-card" style="position:relative;">
-    <button class="popup-close" data-close>×</button>
+    <button class="popup-close" data-close aria-label="Close">×</button>
     ${img?`<img src="${img}" alt="">`:''}
     <h3>${esc(title)}</h3>
     <p>${esc(text)}</p>
+    ${ex?`<div class="dyk" style="grid-column:auto;margin-top:12px"><b>EXAMPLE</b>${esc(ex)}</div>`:''}
   </div>`;
   ov.onclick = e => { if(e.target.closest('[data-close]') || e.target===ov) ov.remove(); };
+  ov.querySelector('.popup-close').focus();;
   document.body.appendChild(ov);
 }
+
+
+/* ---------- tap-to-enlarge pictures ---------- */
+function openZoom(src, cap){
+  const ov=document.createElement('div'); ov.className='zoom'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-modal','true'); ov.setAttribute('aria-label','Enlarged picture');
+  ov.innerHTML=`<button class="zoom-x" aria-label="Close">×</button><div class="zoom-stage"><img src="${src}" alt="${esc(cap||'')}"></div>${cap?`<p class="zoom-cap">${esc(cap)}</p>`:''}<p class="zoom-tip">${matchMedia('(pointer:fine)').matches?'Click the picture to zoom in, move the mouse to look around. Esc to close.':'Pinch to zoom. Tap × to close.'}</p>`;
+  document.body.appendChild(ov); document.body.style.overflow='hidden';
+  const im=$('img',ov), stage=$('.zoom-stage',ov); let z=false;
+  const close=()=>{ ov.remove(); document.body.style.overflow=''; document.removeEventListener('keydown',onKey,true); };
+  const onKey=e=>{ if(e.key==='Escape'){ e.stopPropagation(); close(); } };
+  document.addEventListener('keydown',onKey,true);
+  const pan=e=>{ if(!z) return; const r=stage.getBoundingClientRect(); im.style.transformOrigin=`${(e.clientX-r.left)/r.width*100}% ${(e.clientY-r.top)/r.height*100}%`; };
+  im.addEventListener('click',e=>{ if(!matchMedia('(pointer:fine)').matches) return; e.stopPropagation(); z=!z; ov.classList.toggle('zoomed',z); pan(e); });
+  stage.addEventListener('mousemove',pan);
+  ov.addEventListener('click',e=>{ if(e.target.closest('.zoom-x') || e.target===ov || e.target===stage) close(); });
+  $('.zoom-x',ov).focus();
+}
+document.addEventListener('click',e=>{
+  if(e.target.closest('.zoom')) return;
+  const h=e.target.closest('.mhero'); if(h && cur){ openZoom(img(cur.hero), cur.heroCap||cur.title); return; }
+  const z=e.target.closest('.fig img, .guide-wrap img, .popup-card img'); if(z){ const c=z.closest('figure'); openZoom(z.src, c?c.textContent.trim():(z.alt||'')); }
+},true);
+document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ') && e.target.classList && e.target.classList.contains('mhero') && cur){ e.preventDefault(); openZoom(img(cur.hero), cur.heroCap||cur.title); return; } const li=e.target.closest&&e.target.closest('li[data-person]'); if(li && (e.key==='Enter'||e.key===' ')){ e.preventDefault(); li.click(); } });
 
 /* ---------- routing & global clicks ---------- */
 document.addEventListener('click',e=>{
   const person = e.target.closest('[data-person]');
   if(person){
     const name = person.dataset.person;
-    const details = {
-      'George Washington':'Led the Continental Army in the Revolutionary War, then led the Constitutional Convention in 1787. He became the first President and set many traditions still followed today.',
-      'James Madison':'Wrote much of the Constitution and the Bill of Rights. He is called the Father of the Constitution. He later became the fourth President.',
-      'Benjamin Franklin':'Scientist, inventor, and diplomat. At 81 he was the oldest delegate. He helped delegates compromise so the Constitution could be finished.',
-      'Independence Hall':'The building in Philadelphia where the Declaration of Independence and the Constitution were signed. It still stands today and is a national historic site.',
-      'Hammurabi':'King of Babylon around 1754 BCE. He is famous for the Code of Hammurabi, one of the oldest written sets of laws. The laws were carved on a tall stone stele and covered topics like trade, family, and crime. The idea that laws should be written down and apply to everyone was a big step.',
-      'Sargon of Akkad':'Created the world’s first empire around 2300 BCE by conquering many city-states in Mesopotamia. His rule showed that one leader could control a large area, not just one city.',
-      'Epic of Gilgamesh':'One of the oldest stories ever written, from Mesopotamia. It tells of a hero king who searches for eternal life. The story was written on clay tablets in cuneiform and shows what people valued and feared.',
-      'Ur':'A major Sumerian city with a huge ziggurat (stepped temple). Archaeologists have found royal tombs and many artifacts that teach us about daily life and religion in early Mesopotamia.',
-      'Confucius':'A Chinese teacher who lived about 500 BCE. He taught that people should respect family, rulers should be fair, and education matters. His ideas shaped Chinese government and society for centuries.',
-      'Qin Shi Huang':'The first emperor of a united China in 221 BCE. He standardized writing, money, and measurements, and began the Great Wall. He is also known for the Terracotta Army buried with him.',
-      'Han dynasty':'Ruled China from 206 BCE to 220 CE. They opened the Silk Road for trade with the West and invented paper. Chinese culture and government grew stronger under the Han.',
-      'Terracotta Army':'About 8,000 life-size clay soldiers, horses, and chariots buried near Qin Shi Huang’s tomb. They were made to protect the emperor in the afterlife. Archaeologists discovered them in 1974.',
-      'Mohenjo-daro & Harappa':'Two major cities of the Indus Valley Civilization (about 2500–1900 BCE). They had carefully planned streets in a grid, brick houses, and advanced drainage systems. These cities show early urban planning.',
-      'Siddhartha Gautama':'A prince who left his palace, meditated, and became the Buddha. He taught that suffering comes from wanting too much and that people can find peace by following the Middle Way. Buddhism spread across Asia.',
-      'Ashoka':'A powerful Indian emperor of the Maurya Empire. After a bloody war he turned to peace and Buddhism. He built roads, hospitals, and pillars with his laws written on them.',
-      'Guru Nanak':'Founded Sikhism around 1500 CE in the Punjab region of India. He taught that all people are equal, that there is one God, and that people should live honestly and help others.',
-      'Olmec':'Often called the “mother culture” of Mesoamerica (about 1200–400 BCE). They are famous for carving huge stone heads and for early writing and calendar ideas that later cultures used.',
-      'Maya':'Built great cities such as Tikal and Chichén Itzá. Their peak was about 250–900 CE. They created an accurate calendar, advanced writing, and impressive pyramid temples.',
-      'Aztec':'Founded the powerful city of Tenochtitlan in 1325 CE on an island in a lake. They built a large empire in central Mexico before being conquered by Spain in 1521.',
-      'Inca':'Ruled a vast empire from Cusco in the Andes Mountains. They built Machu Picchu and a huge road system. The Spanish conquered them in 1532.',
-      'Pericles':'Leader of Athens during its golden age. He supported democracy, built the Parthenon, and encouraged art and philosophy. Athens became a center of learning under his leadership.',
-      'Socrates':'A famous Greek philosopher who taught by asking questions instead of giving answers. His method is still called the Socratic method. He was put on trial in Athens for his ideas.',
-      'Homer':'Ancient Greek poet credited with writing the Iliad and the Odyssey, two of the oldest and most important works of Western literature. These epic poems tell stories of heroes, gods, and the Trojan War.',
-      'Alexander the Great':'King of Macedonia who conquered a huge empire stretching from Greece to Egypt and India (336–323 BCE). He spread Greek culture, language, and ideas across three continents.',
-      'Julius Caesar':'A Roman general and politician who conquered Gaul and became dictator of Rome. He was assassinated in 44 BCE by senators who feared he had too much power. His death led to the end of the Roman Republic.',
-      'Augustus':'The first emperor of Rome. He brought an end to civil wars and began the Pax Romana, about 200 years of relative peace and prosperity across the empire.',
-      'Constantine':'The first Roman emperor to convert to Christianity. In 313 CE he issued the Edict of Milan, which legalized Christianity and ended the persecution of Christians.',
-      'The Colosseum':'A giant amphitheater in Rome that could hold about 50,000 people. It was used for gladiator fights, animal hunts, and public spectacles. It is one of the most famous ancient buildings still standing.',
-      'King Ezana':'King of the Axum kingdom in East Africa. Around 330 CE he adopted Christianity, making Axum one of the first Christian kingdoms in the world. He also expanded trade and power.',
-      'Adulis':'The busy seaport of the Axum kingdom on the Red Sea. Ships from India, the Mediterranean, and Africa stopped here to trade goods such as ivory, gold, spices, and textiles.',
-      'Great Enclosure':'The largest ancient stone structure south of the Sahara Desert, part of Great Zimbabwe. Built without mortar, its high walls show the skill of the builders and the power of the kingdom.',
-      'Zimbabwe Birds':'Carved soapstone birds found at Great Zimbabwe. They are now a national symbol of the country of Zimbabwe and represent the culture and history of the Shona people.',
-      'Prophet Muhammad':'The prophet of Islam, born in Mecca about 570 CE. Muslims believe he received the Qur’an from God. His teachings form the basis of Islam, which spread rapidly across Asia, Africa, and Europe.',
-      'al-Khwarizmi':'A Persian mathematician who worked in Baghdad. He is called the “father of algebra.” The word “algorithm” comes from his name. His work helped preserve and advance mathematics.',
-      'House of Wisdom':'A famous library and research center in Baghdad during the Abbasid Caliphate. Scholars there translated Greek, Persian, and Indian books into Arabic and made new discoveries in science, math, and medicine.',
-      'Mecca':'Islam’s holiest city, located in present-day Saudi Arabia. It is the birthplace of Prophet Muhammad and the site of the Kaaba. Every year millions of Muslims make the Hajj pilgrimage to Mecca.',
-      'Roman engineering':'Romans built long-lasting roads, aqueducts that carried water to cities, and strong concrete buildings. These inventions changed daily life by making travel, trade, and clean water easier.',
-      'Chinese inventions':'Ancient China invented paper, the compass, gunpowder, and printing. These ideas spread along the Silk Road and changed the world by improving communication, navigation, and technology.',
-      'Maya astronomy':'The Maya carefully observed the stars and planets. Their calendar was extremely accurate and guided farming, religious ceremonies, and important events.',
-      'Great Zimbabwe trade':'Archaeologists found Chinese porcelain and other foreign goods at Great Zimbabwe. This shows the kingdom traded with distant places across the Indian Ocean.',
-      'Islamic science':'Scholars in the Islamic world preserved ancient Greek knowledge and added new discoveries in math, astronomy, medicine, and chemistry. The House of Wisdom in Baghdad was a major center of learning.',
-      'Greek democracy':'In Athens, citizens voted directly on laws and leaders. This idea of people having a say in government influenced later democracies, including the United States.',
-      'Charlemagne':'King of the Franks who united much of Western Europe. In 800 CE the Pope crowned him emperor. He supported education and is sometimes called the Father of Europe.',
-      'Leonardo da Vinci':'A Renaissance artist and inventor from Italy. He painted the Mona Lisa and The Last Supper, and filled notebooks with ideas for machines, anatomy, and flight. He represents the idea of a well-rounded learner.',
-      'Johannes Gutenberg':'German inventor who built a movable-type printing press around 1450. His press made books cheaper and faster to produce, helping spread knowledge during the Renaissance and Reformation.',
-      'The Medici family':'Powerful bankers in Florence, Italy, during the Renaissance. They used their wealth to support artists, architects, and scholars, helping Florence become a center of art and learning.'
-    };
-    const img = name==='Independence Hall' ? 'img/independence-hall.jpg' : null;
-    showPopup(name, details[name] || 'A key person or place from this unit.', img);
+
+    const key=name.toLowerCase().replace(/[^a-z]/g,''), g=/^[GRAPES] = /.test(name)?GRAPES_INFO[name[0]]:null;
+    if(g){ showPopup(name, g.ask, `img/${g.icon}.jpg`, g.ex); return; }
+    const pic = name==='Independence Hall' ? 'img/independence-hall.jpg' : PMAP[key] ? `img/${PMAP[key]}.jpg` : null;
+    if(PERSON_DETAILS[name]) showPopup(name, PERSON_DETAILS[name], pic);
     return;
   }
   const g=e.target.closest('[data-go]'); if(g){ location.hash=g.dataset.go; return; }
